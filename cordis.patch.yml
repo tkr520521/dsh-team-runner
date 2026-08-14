@@ -1,0 +1,17 @@
+# dsh-agent-teams bundle patch — installs the plugin as one more row over
+# the active profile. Install with:
+#   dsh plugin --profile <name> add dsh-agent-teams
+- insert:
+    - id: dsh-agent-teams
+      name: dsh-agent-teams
+      config:
+        maxConcurrentDelegations: 3
+        teams:
+          - name: writing
+            agents:
+              - role: planner
+                prompt: 'Plan the task: outline goals, steps, and acceptance criteria.'
+              - role: writer
+                prompt: 'Write the full deliverable following the plan.'
+              - role: reviewer
+                prompt: 'Review the deliverable for correctness and quality; report issues.'
