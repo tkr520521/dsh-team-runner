@@ -14,7 +14,7 @@ export function activeDelegationCount(): number {
 }
 
 /** Concatenate the text blocks of a child's final output. */
-function blocksToText(blocks: readonly ContentBlock[]): string {
+export function blocksToText(blocks: readonly ContentBlock[]): string {
   let text = ''
   for (const block of blocks) {
     if (block.type === 'text') text += block.text
@@ -29,7 +29,7 @@ function requireParent(exec: { agent?: Agent }): Agent {
   return exec.agent
 }
 
-function findRolePrompt(config: Config, role: string): TeamAgent | undefined {
+export function findRolePrompt(config: Config, role: string): TeamAgent | undefined {
   for (const team of config.teams) {
     const match = team.agents.find((agent) => agent.role === role)
     if (match) return match
@@ -123,7 +123,7 @@ async function runTeam(
   return { team: team.name, steps, final: context }
 }
 
-function renderTeamRun(value: unknown): string {
+export function renderTeamRun(value: unknown): string {
   const v = value as TeamRunValue
   const lines = v.steps.map((step, index) => `[${index + 1}] ${step.role}:\n${step.output}`)
   return `Team "${v.team}" finished.\n\n${lines.join('\n\n')}\n\nFinal result:\n${v.final}`

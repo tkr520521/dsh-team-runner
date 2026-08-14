@@ -1,58 +1,45 @@
 # dsh-agent-teams
 
-> 多 Agent 编排插件：把 DeepSeek Harness 的子代理能力组装成「团队流水线」。
-> Multi-agent orchestration for DeepSeek Harness: turn the `subagents` seam into reusable, policy-gated agent teams.
+> 澶?Agent 缂栨帓鎻掍欢锛氭妸 DeepSeek Harness 鐨勫瓙浠ｇ悊鑳藉姏缁勮鎴愩€屽洟闃熸祦姘寸嚎銆嶃€?> Multi-agent orchestration for DeepSeek Harness: turn the `subagents` seam into reusable, policy-gated agent teams.
 
 [![license](https://img.shields.io/badge/license-MIT-blue)](#license) ![api](https://img.shields.io/badge/API-rc.6-8A2BE2) ![tools](https://img.shields.io/badge/tools-3-2ea44f)
 
-## 这是什么 / What is this
+## 杩欐槸浠€涔?/ What is this
 
-`dsh-agent-teams` 是一个遵循 Harness「一切皆插件」理念的编排插件。它不重新发明 Agent 循环，
-而是组合已有的插件化能力点：
+`dsh-agent-teams` 鏄竴涓伒寰?Harness銆屼竴鍒囩殕鎻掍欢銆嶇悊蹇电殑缂栨帓鎻掍欢銆傚畠涓嶉噸鏂板彂鏄?Agent 寰幆锛?鑰屾槸缁勫悎宸叉湁鐨勬彃浠跺寲鑳藉姏鐐癸細
 
-- **工具（tools）**：注册 `team_list` / `team_run` / `team_delegate` 三个模型可见工具。
-- **子代理（subagents）**：通过 `ctx.subagents.start()` 在 `spawn` / `fork` / `acp` 等 provider 上派生子代理。
-- **策略（policy）**：用 `tools/pre-execute` 瀑布事件做并发门禁，超过上限的团队调用直接拒绝（fail loud）。
+- **宸ュ叿锛坱ools锛?*锛氭敞鍐?`team_list` / `team_run` / `team_delegate` 涓変釜妯″瀷鍙宸ュ叿銆?- **瀛愪唬鐞嗭紙subagents锛?*锛氶€氳繃 `ctx.subagents.start()` 鍦?`spawn` / `fork` / `acp` 绛?provider 涓婃淳鐢熷瓙浠ｇ悊銆?- **绛栫暐锛坧olicy锛?*锛氱敤 `tools/pre-execute` 鐎戝竷浜嬩欢鍋氬苟鍙戦棬绂侊紝瓒呰繃涓婇檺鐨勫洟闃熻皟鐢ㄧ洿鎺ユ嫆缁濓紙fail loud锛夈€?
+閰嶇疆涓€涓洟闃燂紙濡?planner 鈫?writer 鈫?reviewer锛夛紝妯″瀷灏辫兘鐢ㄤ竴娆?`team_run` 瑙﹀彂瀹屾暣娴佹按绾匡細
+姣忎釜瑙掕壊鐨勮緭鍑鸿嚜鍔ㄦ垚涓轰笅涓€涓鑹茬殑浠诲姟涓婁笅鏂囥€?
+## 鐗规€?/ Features
 
-配置一个团队（如 planner → writer → reviewer），模型就能用一次 `team_run` 触发完整流水线：
-每个角色的输出自动成为下一个角色的任务上下文。
-
-## 特性 / Features
-
-- **team_run** — 顺序执行整个团队；每步把上一步输出拼进下一步 prompt，返回分步结果与最终输出。
-- **team_list** — 列出已配置的团队与角色，模型可先查询再调度。
-- **team_delegate** — 把单个任务委托给任意已配置角色（找不到角色时按原始任务直派）。
-- **并发门禁** — `maxConcurrentDelegations` 硬上限 + `tools/pre-execute` 预执行拒绝，防止并行调用打爆子代理 provider。
-- **零循环代码** — 子代理的创建、取消、清理全部走 Harness 官方 `ctx.subagents` seam，随插随卸。
-
-## 安装 / Install
+- **team_run** 鈥?椤哄簭鎵ц鏁翠釜鍥㈤槦锛涙瘡姝ユ妸涓婁竴姝ヨ緭鍑烘嫾杩涗笅涓€姝?prompt锛岃繑鍥炲垎姝ョ粨鏋滀笌鏈€缁堣緭鍑恒€?- **team_list** 鈥?鍒楀嚭宸查厤缃殑鍥㈤槦涓庤鑹诧紝妯″瀷鍙厛鏌ヨ鍐嶈皟搴︺€?- **team_delegate** 鈥?鎶婂崟涓换鍔″鎵樼粰浠绘剰宸查厤缃鑹诧紙鎵句笉鍒拌鑹叉椂鎸夊師濮嬩换鍔＄洿娲撅級銆?- **骞跺彂闂ㄧ** 鈥?`maxConcurrentDelegations` 纭笂闄?+ `tools/pre-execute` 棰勬墽琛屾嫆缁濓紝闃叉骞惰璋冪敤鎵撶垎瀛愪唬鐞?provider銆?- **闆跺惊鐜唬鐮?* 鈥?瀛愪唬鐞嗙殑鍒涘缓銆佸彇娑堛€佹竻鐞嗗叏閮ㄨ蛋 Harness 瀹樻柟 `ctx.subagents` seam锛岄殢鎻掗殢鍗搞€?
+## 瀹夎 / Install
 
 ```bash
-# 从本地目录安装（会自动链接并写入 profile 的 bundles）
-dsh plugin --profile <name> add /path/to/dsh-agent-teams
+# 浠庢湰鍦扮洰褰曞畨瑁咃紙浼氳嚜鍔ㄩ摼鎺ュ苟鍐欏叆 profile 鐨?bundles锛?dsh plugin --profile <name> add /path/to/dsh-agent-teams
 
-# 或从 npm/GitHub 安装
+# 鎴栦粠 npm/GitHub 瀹夎
 dsh plugin --profile <name> add dsh-agent-teams
 ```
 
-需要 profile 已包含子代理服务与至少一个 provider：
-
+闇€瑕?profile 宸插寘鍚瓙浠ｇ悊鏈嶅姟涓庤嚦灏戜竴涓?provider锛?
 ```text
 @deepseek-ai/dsh-subagent
-@deepseek-ai/dsh-subagent-spawn-in-process   # 提供 provider: spawn
-@deepseek-ai/dsh-subagent-fork-in-process   # 提供 provider: fork
+@deepseek-ai/dsh-subagent-spawn-in-process   # 鎻愪緵 provider: spawn
+@deepseek-ai/dsh-subagent-fork-in-process   # 鎻愪緵 provider: fork
 ```
 
-## 配置 / Configuration
+## 閰嶇疆 / Configuration
 
-编辑 profile 的 `cordis.patch.yml`（或插件自带的补丁层）：
+缂栬緫 profile 鐨?`cordis.patch.yml`锛堟垨鎻掍欢鑷甫鐨勮ˉ涓佸眰锛夛細
 
 ```yaml
 - insert:
     - id: dsh-agent-teams
       name: dsh-agent-teams
       config:
-        provider: spawn            # 使用的子代理 provider
+        provider: spawn            # 浣跨敤鐨勫瓙浠ｇ悊 provider
         maxConcurrentDelegations: 3
         teams:
           - name: writing
@@ -65,55 +52,49 @@ dsh plugin --profile <name> add dsh-agent-teams
                 prompt: 'Review the deliverable for correctness and quality; report issues.'
 ```
 
-| 字段 | 类型 | 默认 | 说明 |
+| 瀛楁 | 绫诲瀷 | 榛樿 | 璇存槑 |
 |---|---|---|---|
-| `provider` | string | `spawn` | `ctx.subagents` 上注册的 provider 名 |
-| `maxConcurrentDelegations` | number | `3` | 本插件并发派生的硬上限 |
-| `teams` | array | `[]` | 团队列表：`name` + 有序 `agents[{role, prompt}]` |
+| `provider` | string | `spawn` | `ctx.subagents` 涓婃敞鍐岀殑 provider 鍚?|
+| `maxConcurrentDelegations` | number | `3` | 鏈彃浠跺苟鍙戞淳鐢熺殑纭笂闄?|
+| `teams` | array | `[]` | 鍥㈤槦鍒楄〃锛歚name` + 鏈夊簭 `agents[{role, prompt}]` |
 
-## 用法 / Usage
+## 鐢ㄦ硶 / Usage
 
-给模型一句自然语言即可：
-
+缁欐ā鍨嬩竴鍙ヨ嚜鐒惰瑷€鍗冲彲锛?
 ```text
-Use team_run with team "writing" on: 为一间咖啡店写一句广告语。
-```
+Use team_run with team "writing" on: 涓轰竴闂村挅鍟″簵鍐欎竴鍙ュ箍鍛婅銆?```
 
-插件会依次派生 planner / writer / reviewer 三个子代理，最后把整条流水线结果返回给模型。
-
-## 架构 / How it works
+鎻掍欢浼氫緷娆℃淳鐢?planner / writer / reviewer 涓変釜瀛愪唬鐞嗭紝鏈€鍚庢妸鏁存潯娴佹按绾跨粨鏋滆繑鍥炵粰妯″瀷銆?
+## 鏋舵瀯 / How it works
 
 ```mermaid
 flowchart LR
-    M[模型] -->|team_run| T[team_run 工具]
-    T --> P[pre-execute 策略门禁]
+    M[妯″瀷] -->|team_run| T[team_run 宸ュ叿]
+    T --> P[pre-execute 绛栫暐闂ㄧ]
     P -->|allow| S[ctx.subagents.start]
     S -->|planner| A1
     S -->|writer| A2
     S -->|reviewer| A3
-    A1 -->|输出作为输入| A2
-    A2 -->|输出作为输入| A3
-    A3 --> R[分步结果 + 最终输出]
+    A1 -->|杈撳嚭浣滀负杈撳叆| A2
+    A2 -->|杈撳嚭浣滀负杈撳叆| A3
+    A3 --> R[鍒嗘缁撴灉 + 鏈€缁堣緭鍑篯
 ```
 
-- 工具实现只依赖 `ctx.tools`、`ctx.subagents` 两个服务（`inject: ['tools', 'subagents']`）。
-- 每个子代理携带调用方 `exec.agent` 作为 parent，继承血缘、深度与取消信号（`exec.signal`）。
-- `run.dispose()` 在结果收集后无条件执行，保证子代理侧剩余工作被取消并释放资源。
-
-## 开发 / Development
+- 宸ュ叿瀹炵幇鍙緷璧?`ctx.tools`銆乣ctx.subagents` 涓や釜鏈嶅姟锛坄inject: ['tools', 'subagents']`锛夈€?- 姣忎釜瀛愪唬鐞嗘惡甯﹁皟鐢ㄦ柟 `exec.agent` 浣滀负 parent锛岀户鎵胯缂樸€佹繁搴︿笌鍙栨秷淇″彿锛坄exec.signal`锛夈€?- `run.dispose()` 鍦ㄧ粨鏋滄敹闆嗗悗鏃犳潯浠舵墽琛岋紝淇濊瘉瀛愪唬鐞嗕晶鍓╀綑宸ヤ綔琚彇娑堝苟閲婃斁璧勬簮銆?
+## 寮€鍙?/ Development
 
 ```bash
 npm install
 npm run build   # tsc -> lib/
+npm test       # node --test (built-in runner)
 ```
 
-本地验证（使用复制出的 profile）：
+鏈湴楠岃瘉锛堜娇鐢ㄥ鍒跺嚭鐨?profile锛夛細
 
 ```bash
 cp -r ~/.dsh/profiles/headless ~/.dsh/profiles/teams-test
 dsh plugin --profile teams-test add /path/to/dsh-agent-teams
-dsh --profile teams-test --dump-config     # 确认补丁与配置生效
-dsh --profile teams-test "用 team_run 跑 writing 团队：写一句咖啡店广告语"
+dsh --profile teams-test --dump-config     # 纭琛ヤ竵涓庨厤缃敓鏁?dsh --profile teams-test "鐢?team_run 璺?writing 鍥㈤槦锛氬啓涓€鍙ュ挅鍟″簵骞垮憡璇?
 ```
 
 ## License
