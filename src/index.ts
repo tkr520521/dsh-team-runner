@@ -3,7 +3,7 @@ import { registerTools } from './teams.js'
 import { registerPolicy } from './policy.js'
 import { Config } from './config.js'
 
-export const name = 'dsh-agent-teams'
+export const name = 'dsh-team-runner'
 export const inject = ['tools', 'subagents']
 
 export { Config }
@@ -13,7 +13,7 @@ export function apply(ctx: Context, config: Config): void {
   registerTools(ctx, config)
   registerPolicy(ctx, config.maxConcurrentDelegations)
   ctx.logger?.(name).info(
-    'dsh-agent-teams loaded: provider=%s teams=%d maxConcurrent=%d',
+    'dsh-team-runner loaded: provider=%s teams=%d maxConcurrent=%d',
     config.provider,
     config.teams.length,
     config.maxConcurrentDelegations,

@@ -12,7 +12,7 @@ export interface Team {
   agents: TeamAgent[]
 }
 
-/** Plugin configuration for dsh-agent-teams. */
+/** Plugin configuration for dsh-team-runner. */
 export interface Config {
   /** ctx.subagents provider name (spawn / fork / acp / ...). */
   provider: string

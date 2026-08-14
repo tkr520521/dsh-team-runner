@@ -1,5 +1,5 @@
 {
-  "name": "dsh-agent-teams",
+  "name": "dsh-team-runner",
   "version": "0.1.0",
   "description": "Multi-agent orchestration plugin for DeepSeek Harness: team presets, subagent delegation, sequential pipelines, and policy gates.",
   "license": "MIT",

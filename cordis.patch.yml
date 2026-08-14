@@ -1,9 +1,9 @@
-# dsh-agent-teams bundle patch — installs the plugin as one more row over
+# dsh-team-runner bundle patch 鈥?installs the plugin as one more row over
 # the active profile. Install with:
-#   dsh plugin --profile <name> add dsh-agent-teams
+#   dsh plugin --profile <name> add dsh-team-runner
 - insert:
-    - id: dsh-agent-teams
-      name: dsh-agent-teams
+    - id: dsh-team-runner
+      name: dsh-team-runner
       config:
         maxConcurrentDelegations: 3
         teams:
